@@ -8,12 +8,12 @@ import vn.edu.iuh.fit.bookstorebackend.model.RestRespone;
 
 @RestControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(value = IdInvalidException.class)
-    public ResponseEntity<RestRespone<Object>> handleException(IdInvalidException idInvalidException) {
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<RestRespone<Object>> handleException(Exception exception) {
         RestRespone<Object> res = new RestRespone<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(idInvalidException.getMessage());
-        res.setMessage("IdInvalidException");
+        res.setError(exception.getMessage());
+        res.setMessage("Validation Error");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }
