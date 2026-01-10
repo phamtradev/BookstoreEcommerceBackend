@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.Set;
 import java.util.Optional;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 
 @Service
 @RequiredArgsConstructor
@@ -66,10 +67,23 @@ public class JwtService {
             if (maybeUser.isPresent()) {
                 User user = maybeUser.get();
                 Set<RefreshToken> tokens = refreshTokenRepository.findByUser(user);
-                boolean hasValid = tokens != null && tokens.stream().anyMatch(t ->
-                        !t.isRevoked() && t.getExpiresAt() != null && t.getExpiresAt().isAfter(Instant.now()));
-                if (!hasValid) {
+                if (tokens == null || tokens.isEmpty()) {
                     throw new BadCredentialsException("Session invalid - login again");
+                }
+
+                boolean anyActiveNotExpired = tokens.stream().anyMatch(t ->
+                        !t.isRevoked() && t.getExpiresAt() != null && t.getExpiresAt().isAfter(Instant.now()));
+                if (anyActiveNotExpired) {
+                    // ok
+                } else {
+                    boolean anyActiveExpired = tokens.stream().anyMatch(t ->
+                            !t.isRevoked() && t.getExpiresAt() != null && t.getExpiresAt().isBefore(Instant.now()));
+                    if (anyActiveExpired) {
+                        throw new CredentialsExpiredException("Refresh token expired - login again");
+                    } else {
+                        // all revoked
+                        throw new BadCredentialsException("Session revoked - login again");
+                    }
                 }
             }
         }
