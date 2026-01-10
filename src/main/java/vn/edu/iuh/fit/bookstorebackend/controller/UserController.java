@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.bookstorebackend.dto.request.CreateUserRequest;
-import vn.edu.iuh.fit.bookstorebackend.dto.request.SetUserRolesRequest;
+// removed SetUserRolesRequest (use role codes API)
 import vn.edu.iuh.fit.bookstorebackend.dto.request.UpdateUserRequest;
 import vn.edu.iuh.fit.bookstorebackend.dto.response.UserResponse;
 import vn.edu.iuh.fit.bookstorebackend.service.UserService;
@@ -51,9 +51,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @PatchMapping("/{id}/roles")
-    public ResponseEntity<UserResponse> setRoles(@PathVariable Long userId, @RequestBody SetUserRolesRequest request) {
-        UserResponse user = userService.setRoles(userId, request);
+    @PatchMapping("/{id}/roles/codes")
+    public ResponseEntity<UserResponse> setRolesByCodes(@PathVariable Long id, @RequestBody vn.edu.iuh.fit.bookstorebackend.dto.request.SetUserRoleCodesRequest request) {
+        UserResponse user = userService.setRolesByCodes(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
