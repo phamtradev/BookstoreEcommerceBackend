@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [ self-hosted ]  # hoặc [self-hosted, ec2] nếu runner bạn có label "ec2"
+    runs-on: [ self-hosted ]
 
     steps:
       - uses: actions/checkout@v4
