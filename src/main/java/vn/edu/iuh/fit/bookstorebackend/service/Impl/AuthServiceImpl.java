@@ -70,8 +70,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtService.generateAccessToken(user);
-        String refreshTokenStr = UUID.randomUUID().toString();
+        // xóa toàn bộ token cũ của người dùng để tránh trùng lặp
+        refreshTokenRepository.deleteByUser(user);
 
+        String refreshTokenStr = UUID.randomUUID().toString();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(refreshTokenStr);
         refreshToken.setUser(user);
