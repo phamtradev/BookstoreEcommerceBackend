@@ -7,6 +7,7 @@ import vn.edu.iuh.fit.bookstorebackend.dto.request.AuthenticationRequest;
 import vn.edu.iuh.fit.bookstorebackend.dto.request.RefreshTokenRequest;
 import vn.edu.iuh.fit.bookstorebackend.dto.request.RegisterRequest;
 import vn.edu.iuh.fit.bookstorebackend.dto.response.AuthenticationResponse;
+import vn.edu.iuh.fit.bookstorebackend.dto.response.UserResponse;
 import vn.edu.iuh.fit.bookstorebackend.service.AuthService;
 
 @RestController
@@ -20,8 +21,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<vn.edu.iuh.fit.bookstorebackend.dto.response.UserResponse> register(@RequestBody RegisterRequest request) {
-        vn.edu.iuh.fit.bookstorebackend.dto.response.UserResponse user = authService.register(request);
+    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request) {
+        UserResponse user = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
