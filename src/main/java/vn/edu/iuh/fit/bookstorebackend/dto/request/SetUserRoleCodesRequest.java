@@ -7,6 +7,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class SetUserRolesRequest {
-    private Set<Long> roleIds;
+public class SetUserRoleCodesRequest {
+    private Set<String> roleCodes;
 }
+
+

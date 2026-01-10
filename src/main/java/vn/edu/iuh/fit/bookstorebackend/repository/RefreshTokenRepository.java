@@ -5,14 +5,14 @@ import org.springframework.stereotype.Repository;
 import vn.edu.iuh.fit.bookstorebackend.model.RefreshToken;
 import vn.edu.iuh.fit.bookstorebackend.model.User;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     Optional<RefreshToken> findByToken(String token);
 
-    Set<RefreshToken> findByUser(User user);
+    List<RefreshToken> findByUser(User user);
 
     void deleteByUser(User user);
 }

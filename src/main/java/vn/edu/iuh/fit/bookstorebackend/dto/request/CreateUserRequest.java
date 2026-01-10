@@ -22,5 +22,5 @@ public class CreateUserRequest {
 
     private Boolean active;
 
-    private Set<Long> roleIds;
+    private Set<String> roleCodes;
 }

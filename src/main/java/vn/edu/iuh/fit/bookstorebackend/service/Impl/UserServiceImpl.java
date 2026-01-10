@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.bookstorebackend.dto.request.CreateUserRequest;
-import vn.edu.iuh.fit.bookstorebackend.dto.request.SetUserRolesRequest;
+// removed SetUserRolesRequest - using role codes API instead
 import vn.edu.iuh.fit.bookstorebackend.dto.request.UpdateUserRequest;
+import vn.edu.iuh.fit.bookstorebackend.dto.request.SetUserRoleCodesRequest;
 import vn.edu.iuh.fit.bookstorebackend.dto.response.UserResponse;
 import vn.edu.iuh.fit.bookstorebackend.model.Role;
 import vn.edu.iuh.fit.bookstorebackend.model.User;
@@ -46,8 +47,11 @@ public class UserServiceImpl implements UserService {
         user.setActive(request.getActive() != null ? request.getActive() : true);
 
         // Set roles if provided
-        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
-            Set<Role> roles = roleRepository.findByIdIn(request.getRoleIds());
+        if (request.getRoleCodes() != null && !request.getRoleCodes().isEmpty()) {
+            Set<Role> roles = request.getRoleCodes().stream()
+                    .map(code -> roleRepository.findByCode(code)
+                            .orElseThrow(() -> new RuntimeException("Role not found with code: " + code)))
+                    .collect(Collectors.toSet());
             user.setRoles(roles);
         }
 
@@ -106,13 +110,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse setRoles(Long userId, SetUserRolesRequest request) {
+    public UserResponse setRolesByCodes(Long userId, SetUserRoleCodesRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        Set<Role> roles = roleRepository.findByIdIn(request.getRoleIds());
-        user.setRoles(roles);
+        Set<Role> roles = request.getRoleCodes().stream()
+                .map(code -> roleRepository.findByCode(code)
+                        .orElseThrow(() -> new RuntimeException("Role not found with code: " + code)))
+                .collect(Collectors.toSet());
 
+        user.setRoles(roles);
         User updatedUser = userRepository.save(user);
         return convertToUserResponse(updatedUser);
     }

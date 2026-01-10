@@ -13,8 +13,8 @@ import vn.edu.iuh.fit.bookstorebackend.repository.UserRepository;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Set;
 import java.util.Optional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -66,7 +66,7 @@ public class JwtService {
             Optional<User> maybeUser = userRepository.findByUsername(username);
             if (maybeUser.isPresent()) {
                 User user = maybeUser.get();
-                Set<RefreshToken> tokens = refreshTokenRepository.findByUser(user);
+                List<RefreshToken> tokens = refreshTokenRepository.findByUser(user);
                 if (tokens == null || tokens.isEmpty()) {
                     throw new BadCredentialsException("Session invalid - login again");
                 }
